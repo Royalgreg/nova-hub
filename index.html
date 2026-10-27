@@ -4,218 +4,170 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101010">
-  <title>Video Player</title>
+  <title>Lecteur vidéo multi-plateforme</title>
   <style>
-    * { box-sizing: border-box; }
-
     body {
       margin: 0;
-      min-height: 100vh;
+      padding: 24px;
       background: #101010;
       color: #f5f5f5;
       font: 16px/1.5 system-ui, sans-serif;
     }
-
-    header {
-      padding: 20px;
-      border-bottom: 1px solid #303030;
-    }
-
-    header, main {
-      width: min(900px, 100%);
-      margin-inline: auto;
-    }
-
-    header h1 {
-      margin: 0;
-      color: #ff9900;
-      font-size: 25px;
-    }
-
-    main { padding: 28px 18px; }
-
-    .subtitle { color: #aaa; }
-
-    form {
-      display: flex;
-      gap: 10px;
-      margin: 24px 0 12px;
-    }
-
+    main { max-width: 900px; margin: auto; }
+    form { display: flex; gap: 10px; margin: 20px 0; }
     input, button {
-      min-height: 48px;
-      border-radius: 9px;
+      padding: 12px;
+      border-radius: 8px;
       font: inherit;
     }
-
     input {
-      width: 100%;
+      flex: 1;
       min-width: 0;
-      padding: 12px;
-      border: 1px solid #444;
       background: #202020;
       color: white;
+      border: 1px solid #555;
     }
-
-    input:focus-visible, button:focus-visible {
-      outline: 2px solid #ff9900;
-      outline-offset: 3px;
-    }
-
-    button {
-      padding: 10px 18px;
-      border: 0;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    .play {
-      background: #ff9900;
-      color: #171717;
-    }
-
-    .clear {
-      background: #303030;
-      color: white;
-    }
-
-    #message {
-      min-height: 24px;
-      color: #ccc;
-      overflow-wrap: anywhere;
-    }
-
+    button { cursor: pointer; border: 0; }
+    .play { background: #ff9900; font-weight: bold; }
     .player {
       width: 100%;
       aspect-ratio: 16 / 9;
-      overflow: hidden;
-      border-radius: 12px;
       background: #050505;
-      border: 1px solid #292929;
+      border-radius: 10px;
+      overflow: hidden;
     }
-
-    .player iframe {
-      display: block;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-
-    .hint {
-      margin-top: 18px;
-      color: #999;
-      font-size: 14px;
-    }
-
+    iframe { width: 100%; height: 100%; border: 0; }
+    #message { overflow-wrap: anywhere; color: #ccc; }
     @media (max-width: 560px) {
-      main { padding: 22px 14px; }
       form { flex-direction: column; }
-      form button { width: 100%; }
-      header h1 { font-size: 22px; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Video Player</h1>
-  </header>
+<main>
+  <h1>Lecteur vidéo</h1>
+  <p>
+    Colle un lien vidéo ou, de préférence, son URL d'intégration.
+  </p>
 
-  <main>
-    <h2>Regarder une vidéo</h2>
-    <p class="subtitle">
-      Colle le lien d'une vidéo pour ouvrir son lecteur intégré.
-    </p>
+  <form id="form">
+    <input id="url" type="url"
+      placeholder="https://..."
+      aria-label="URL de la vidéo" required>
+    <button class="play">Lire</button>
+    <button type="button" id="clear">Effacer</button>
+  </form>
 
-    <form id="videoForm">
-      <input
-        id="videoUrl"
-        type="url"
-        placeholder="Colle ton lien vidéo ici..."
-        aria-label="Lien de la vidéo"
-        autocomplete="url"
-        required
-      >
-      <button class="play" type="submit">Lire la vidéo</button>
-      <button class="clear" id="clearButton" type="button">
-        Effacer
-      </button>
-    </form>
+  <p id="message" role="status" aria-live="polite"></p>
+  <div class="player" id="player"></div>
+</main>
 
-    <p id="message" role="status" aria-live="polite"></p>
-    <div class="player" id="player"></div>
+<script>
+const form = document.querySelector("#form");
+const input = document.querySelector("#url");
+const player = document.querySelector("#player");
+const message = document.querySelector("#message");
 
-    <p class="hint">
-      Certaines vidéos ne permettent pas l'intégration externe.
-      Dans ce cas, le lecteur peut rester vide ou afficher une erreur.
-    </p>
-  </main>
+// Vérifie un domaine exact ou un véritable sous-domaine.
+function isHost(host, domain) {
+  return host === domain || host.endsWith("." + domain);
+}
 
-  <script>
-    const form = document.querySelector("#videoForm");
-    const input = document.querySelector("#videoUrl");
-    const player = document.querySelector("#player");
-    const message = document.querySelector("#message");
+function getEmbedUrl(raw) {
+  let url;
 
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      player.replaceChildren();
-      message.textContent = "";
+  try {
+    url = new URL(raw.trim());
+  } catch {
+    throw new Error("Entre une URL valide.");
+  }
 
-      let url;
-      try {
-        url = new URL(input.value.trim());
-      } catch {
-        message.textContent = "Entre un lien valide.";
-        return;
-      }
+  if (url.protocol !== "https:" || url.username || url.password) {
+    throw new Error("Utilise une URL HTTPS valide.");
+  }
 
-      const host = url.hostname.toLowerCase();
-      const allowed =
-        url.protocol === "https:" &&
-        (host === "pornhub.com" ||
-         host.endsWith(".pornhub.com"));
+  const host = url.hostname.toLowerCase();
+  const path = url.pathname;
 
-      if (!allowed) {
-        message.textContent =
-          "Utilise un lien HTTPS provenant de Pornhub.";
-        return;
-      }
+  // Pornhub : transforme les formats de liens connus.
+  if (isHost(host, "pornhub.com")) {
+    let id = null;
 
-      let id = null;
+    if (path === "/view_video.php") {
+      id = url.searchParams.get("viewkey");
+    } else if (path.startsWith("/embed/")) {
+      id = path.split("/")[2];
+    }
 
-      if (url.pathname === "/view_video.php") {
-        id = url.searchParams.get("viewkey");
-      } else if (url.pathname.startsWith("/embed/")) {
-        id = url.pathname.split("/")[2];
-      }
+    if (!id || !/^[a-zA-Z0-9_-]+$/.test(id)) {
+      throw new Error(
+        "Lien Pornhub non reconnu. Utilise le lien direct ou embed."
+      );
+    }
 
-      if (!id || !/^[a-zA-Z0-9_-]+$/.test(id)) {
-        message.textContent =
-          "Format de lien non reconnu. Essaie le lien direct de la vidéo.";
-        return;
-      }
+    return new URL(
+      "/embed/" + encodeURIComponent(id),
+      "https://www.pornhub.com"
+    );
+  }
 
-      const iframe = document.createElement("iframe");
-      iframe.title = "Lecteur vidéo intégré";
-      iframe.allow = "fullscreen";
-      iframe.allowFullscreen = true;
-      iframe.referrerPolicy = "strict-origin-when-cross-origin";
-      iframe.src =
-        "https://www.pornhub.com/embed/" +
-        encodeURIComponent(id);
+  // Autres plateformes : accepter seulement une URL
+  // embed dont le format a été fourni par le site.
+  const supportedHosts = [
+    "xvideos.com",
+    "xhamster.com",
+    "eporner.com",
+    "banned.video"
+  ];
 
-      player.appendChild(iframe);
-      message.textContent =
-        "Lecteur chargé. La lecture dépend des autorisations de la vidéo.";
-    });
+  const supported = supportedHosts.some(
+    domain => isHost(host, domain)
+  );
 
-    document.querySelector("#clearButton").addEventListener("click", () => {
-      input.value = "";
-      player.replaceChildren();
-      message.textContent = "";
-      input.focus();
-    });
-  </script>
+  if (!supported) {
+    throw new Error("Plateforme non prise en charge.");
+  }
+
+  // Ne pas convertir arbitrairement une page vidéo ordinaire.
+  if (!path.toLowerCase().includes("/embed/")) {
+    throw new Error(
+      "Colle l'URL embed copiée depuis le bouton Partager du site."
+    );
+  }
+
+  return url;
+}
+
+form.addEventListener("submit", event => {
+  event.preventDefault();
+  player.replaceChildren();
+  message.textContent = "";
+
+  try {
+    const embedUrl = getEmbedUrl(input.value);
+
+    const iframe = document.createElement("iframe");
+    iframe.src = embedUrl.href;
+    iframe.title = "Lecteur vidéo intégré";
+    iframe.allow = "fullscreen; picture-in-picture";
+    iframe.allowFullscreen = true;
+    iframe.loading = "lazy";
+    iframe.referrerPolicy = "strict-origin-when-cross-origin";
+
+    player.appendChild(iframe);
+    message.textContent =
+      "Lecteur chargé. La plateforme peut encore refuser l'intégration.";
+  } catch (error) {
+    message.textContent = error.message;
+  }
+});
+
+document.querySelector("#clear").addEventListener("click", () => {
+  input.value = "";
+  player.replaceChildren();
+  message.textContent = "";
+  input.focus();
+});
+</script>
 </body>
 </html>
