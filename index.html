@@ -1,1331 +1,636 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#100d18">
-  <title>Nova Hub ✦</title>
-
-  <style>
-    :root {
-      color-scheme: dark;
-      --bg: #100d18;
-      --panel: #191425;
-      --panel2: #211a30;
-      --line: #342945;
-      --text: #f7f3ff;
-      --muted: #b5a9c8;
-      --purple: #a855f7;
-      --purple2: #7c3aed;
-      --pink: #d8b4fe;
-      --danger: #fb7185;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: radial-gradient(ellipse at top right, #26163b 0, var(--bg) 42%);
-      color: var(--text);
-    }
-
-    button, input, textarea { font: inherit; }
-    button { cursor: pointer; }
-
-    button:focus-visible,
-    input:focus-visible,
-    textarea:focus-visible {
-      outline: 2px solid var(--pink);
-      outline-offset: 2px;
-    }
-
-    .hidden { display: none !important; }
-    .star { color: var(--pink); font-size: 1.3em; }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      font-weight: 850;
-      font-size: 1.25rem;
-      letter-spacing: -.04em;
-    }
-
-    .brand-mark {
-      display: grid;
-      place-items: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 13px;
-      background: linear-gradient(140deg, var(--purple), var(--purple2));
-      box-shadow: 0 8px 28px #a855f733;
-      color: white;
-    }
-
-    .brand-mark svg {
-      width: 24px;
-      height: 24px;
-      fill: currentColor;
-    }
-
-    .muted { color: var(--muted); }
-
-    .btn {
-      border: 1px solid var(--line);
-      border-radius: 11px;
-      padding: 10px 14px;
-      background: var(--panel2);
-      color: var(--text);
-      transition: .18s ease;
-    }
-
-    .btn:hover {
-      border-color: #8b5cf6;
-      transform: translateY(-1px);
-    }
-
-    .btn.primary {
-      border-color: transparent;
-      background: linear-gradient(135deg, var(--purple), var(--purple2));
-      color: white;
-      font-weight: 750;
-    }
-
-    .btn.danger { color: #fecdd3; }
-
-    .field {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 11px;
-      padding: 12px 13px;
-      color: var(--text);
-      background: #100d18;
-    }
-
-    .field::placeholder { color: #827493; }
-
-    label {
-      display: block;
-      margin-bottom: 7px;
-      font-size: .9rem;
-      color: #e6dcf5;
-    }
-
-    /* Connexion */
-    .auth-wrap {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-    }
-
-    .auth-card {
-      width: min(100%, 440px);
-      padding: 30px;
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      background: #171221ef;
-      box-shadow: 0 28px 100px #0005;
-    }
-
-    .auth-card .brand { margin-bottom: 28px; }
-
-    .auth-card h1 {
-      margin: 0 0 8px;
-      font-size: 1.8rem;
-      letter-spacing: -.04em;
-    }
-
-    .auth-card form {
-      display: grid;
-      gap: 16px;
-      margin-top: 24px;
-    }
-
-    .auth-card .btn {
-      width: 100%;
-      padding: 12px;
-    }
-
-    .auth-switch {
-      margin: 18px 0 0;
-      text-align: center;
-      font-size: .9rem;
-    }
-
-    .text-button {
-      padding: 0;
-      border: 0;
-      background: transparent;
-      color: var(--pink);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
-    .notice {
-      min-height: 1.4em;
-      margin: 14px 0 0;
-      font-size: .88rem;
-      color: var(--pink);
-      overflow-wrap: anywhere;
-    }
-
-    /* Application */
-    .app { min-height: 100vh; }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      padding: 14px clamp(16px, 4vw, 42px);
-      border-bottom: 1px solid #342945b8;
-      background: #100d18ef;
-      backdrop-filter: blur(18px);
-    }
-
-    .search {
-      flex: 1;
-      max-width: 580px;
-      margin: 0 auto;
-    }
-
-    .user-chip {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      white-space: nowrap;
-      font-size: .9rem;
-    }
-
-    .avatar {
-      display: grid;
-      place-items: center;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: #392452;
-      color: var(--pink);
-      font-weight: 800;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 220px minmax(0, 1fr);
-      max-width: 1500px;
-      margin: auto;
-    }
-
-    aside {
-      padding: 28px 16px;
-      border-right: 1px solid #34294588;
-      min-height: calc(100vh - 69px);
-    }
-
-    .nav {
-      display: grid;
-      gap: 8px;
-      position: sticky;
-      top: 90px;
-    }
-
-    .nav button {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      width: 100%;
-      padding: 12px 14px;
-      text-align: left;
-      border: 1px solid transparent;
-      border-radius: 12px;
-      color: var(--muted);
-      background: transparent;
-    }
-
-    .nav button.active,
-    .nav button:hover {
-      color: white;
-      background: #2b203d;
-      border-color: #443057;
-    }
-
-    .nav-icon {
-      width: 22px;
-      text-align: center;
-      font-size: 1.1rem;
-    }
-
-    .side-note {
-      margin: 34px 8px 0;
-      font-size: .8rem;
-      line-height: 1.6;
-      color: #887b9b;
-    }
-
-    .content {
-      min-width: 0;
-      padding: clamp(20px, 4vw, 42px);
-    }
-
-    /* Accueil */
-    .hero {
-      position: relative;
-      overflow: hidden;
-      padding: clamp(24px, 4vw, 42px);
-      border: 1px solid #4b3264;
-      border-radius: 24px;
-      background:
-        radial-gradient(circle at 85% 10%, #7036a655, transparent 35%),
-        linear-gradient(125deg, #2a1c3b, #171221 70%);
-    }
-
-    .hero:after {
-      content: "✦";
-      position: absolute;
-      right: 6%;
-      top: 2%;
-      font-size: clamp(90px, 16vw, 190px);
-      color: #d8b4fe12;
-      pointer-events: none;
-    }
-
-    .eyebrow {
-      color: var(--pink);
-      text-transform: uppercase;
-      letter-spacing: .15em;
-      font-size: .75rem;
-      font-weight: 800;
-    }
-
-    .hero h1 {
-      position: relative;
-      z-index: 1;
-      max-width: 620px;
-      margin: 12px 0;
-      font-size: clamp(2rem, 4.5vw, 3.4rem);
-      line-height: 1.05;
-      letter-spacing: -.055em;
-    }
-
-    .hero p {
-      position: relative;
-      z-index: 1;
-      max-width: 580px;
-      color: var(--muted);
-    }
-
-    .hero-actions {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 24px;
-    }
-
-    .section-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 14px;
-      margin: 34px 0 16px;
-    }
-
-    .section-head h2 {
-      margin: 0;
-      font-size: 1.3rem;
-      letter-spacing: -.03em;
-    }
-
-    .section-head p {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: .9rem;
-    }
-
-    /* Vidéos */
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-    }
-
-    .video-card {
-      min-width: 0;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 17px;
-      background: var(--panel);
-    }
-
-    .thumb {
-      display: grid;
-      place-items: center;
-      position: relative;
-      aspect-ratio: 16 / 9;
-      overflow: hidden;
-      background: linear-gradient(135deg, #39234f, #15101e);
-      color: #e9d5ff;
-    }
-
-    .thumb video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .play-badge {
-      position: absolute;
-      right: 12px;
-      bottom: 12px;
-      display: grid;
-      place-items: center;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: #a855f7e8;
-      color: white;
-      pointer-events: none;
-    }
-
-    .card-body { padding: 14px; }
-
-    .card-body h3 {
-      margin: 0;
-      font-size: 1rem;
-      overflow-wrap: anywhere;
-    }
-
-    .card-body p {
-      margin: 6px 0 12px;
-      color: var(--muted);
-      font-size: .85rem;
-      overflow-wrap: anywhere;
-    }
-
-    .card-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .card-actions .btn {
-      padding: 7px 10px;
-      font-size: .83rem;
-    }
-
-    .empty {
-      grid-column: 1 / -1;
-      padding: 38px 18px;
-      border: 1px dashed #4a3b5c;
-      border-radius: 17px;
-      text-align: center;
-      color: var(--muted);
-    }
-
-    .empty .big-star {
-      display: block;
-      color: var(--pink);
-      font-size: 2rem;
-      margin-bottom: 8px;
-    }
-
-    /* Import et lecteur */
-    .panel {
-      max-width: 760px;
-      padding: clamp(20px, 4vw, 32px);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      background: var(--panel);
-    }
-
-    .panel h1 {
-      margin-top: 0;
-      letter-spacing: -.04em;
-    }
-
-    .upload-form {
-      display: grid;
-      gap: 17px;
-    }
-
-    .dropzone {
-      padding: 28px 16px;
-      border: 1px dashed #72528e;
-      border-radius: 15px;
-      background: #21172f;
-      text-align: center;
-    }
-
-    .dropzone input {
-      max-width: 100%;
-      margin-top: 12px;
-    }
-
-    .upload-help {
-      color: var(--muted);
-      font-size: .85rem;
-    }
-
-    .player-box {
-      overflow: hidden;
-      background: #050408;
-      border: 1px solid var(--line);
-      border-radius: 17px;
-    }
-
-    .player-box video {
-      display: block;
-      width: 100%;
-      max-height: 70vh;
-      background: black;
-    }
-
-    .player-info { padding: 18px; }
-
-    .player-info h2 {
-      margin: 0 0 8px;
-      overflow-wrap: anywhere;
-    }
-
-    .player-info p {
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      color: var(--muted);
-    }
-
-    .status {
-      color: var(--pink);
-      min-height: 1.3em;
-      font-size: .9rem;
-      overflow-wrap: anywhere;
-    }
-
-    footer {
-      margin-top: 42px;
-      text-align: center;
-      color: #766a86;
-      font-size: .8rem;
-    }
-
-    @media (max-width: 980px) {
-      .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-
-    @media (max-width: 700px) {
-      .topbar { flex-wrap: wrap; gap: 12px; }
-      .search { order: 3; flex-basis: 100%; max-width: none; }
-      .user-chip { margin-left: auto; }
-      .layout { display: block; }
-      aside {
-        min-height: 0;
-        padding: 10px 16px;
-        border-right: 0;
-        border-bottom: 1px solid #34294588;
-      }
-      .nav {
-        display: flex;
-        gap: 6px;
-        position: static;
-        overflow-x: auto;
-      }
-      .nav button {
-        justify-content: center;
-        width: auto;
-        flex: 0 0 auto;
-        padding: 10px 12px;
-      }
-      .nav button span:last-child { font-size: .85rem; }
-      .side-note { display: none; }
-      .content { padding: 20px 16px 34px; }
-    }
-
-    @media (max-width: 460px) {
-      .video-grid { grid-template-columns: 1fr; }
-      .auth-card { padding: 22px; }
-      .user-name { display: none; }
-      .hero h1 { font-size: 2.2rem; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#100b1c">
+<title>Nova Hub — Watch. Learn. Share.</title>
+<style>
+:root {
+  --bg:#100b1c; --panel:#1a1428; --panel2:#241b36;
+  --purple:#8b5cf6; --light:#c4b5fd; --text:#f8f6ff;
+  --muted:#aaa1bd; --border:#352747;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+font:15px/1.5 Inter,system-ui,-apple-system,sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible
+{outline:2px solid var(--light);outline-offset:3px}
+a{color:var(--light)}
+header{height:76px;position:sticky;top:0;z-index:5;
+background:#100b1cf2;backdrop-filter:blur(14px);
+border-bottom:1px solid var(--border);display:flex;
+align-items:center;justify-content:space-between;padding:0 5%}
+.brand{display:flex;align-items:center;gap:11px;font-size:23px;
+font-weight:850;letter-spacing:-1px}
+.star{width:39px;height:39px;background:var(--purple);
+border-radius:12px;display:grid;place-items:center}
+.star svg{width:27px;height:27px}
+nav{display:flex;gap:7px}
+nav button,.secondary{background:transparent;border:1px solid transparent;
+color:var(--muted);border-radius:10px;padding:10px 13px}
+nav button.active,nav button:hover,.secondary:hover{
+background:var(--panel2);color:white}
+main{max-width:1180px;margin:auto;padding:30px 24px 100px}
+.page{display:none}.page.active{display:block}
+.hero{min-height:280px;border:1px solid #4c3470;border-radius:24px;
+padding:36px;display:flex;align-items:center;overflow:hidden;
+position:relative;background:radial-gradient(ellipse at 85% 35%,
+#7540c9 0,transparent 38%),linear-gradient(120deg,#24163b,#130f21 75%)}
+.hero:after{content:"✦";position:absolute;right:7%;top:0;
+font-size:180px;color:#ffffff12;transform:rotate(12deg)}
+.hero-content{max-width:600px;position:relative;z-index:1}
+.eyebrow{color:var(--light);font-size:12px;font-weight:800;
+letter-spacing:2px;text-transform:uppercase}
+h1{font-size:clamp(35px,5vw,58px);line-height:1.05;
+letter-spacing:-2px;margin:12px 0}
+h2{font-size:25px;letter-spacing:-.7px}
+h3{font-size:17px;margin:8px 0}
+p{color:var(--muted)}
+.primary{background:var(--purple);border:0;color:white;
+border-radius:11px;padding:12px 17px;font-weight:750}
+.primary:hover{background:#9b74fa}
+.primary:disabled{opacity:.5;cursor:not-allowed}
+.section-head{display:flex;justify-content:space-between;
+align-items:center;gap:14px;margin-top:35px}
+.section-head h2{margin:0}
+.tools{display:flex;gap:10px;margin:24px 0;flex-wrap:wrap}
+input,textarea,select{width:100%;background:#130f20;border:1px solid var(--border);
+border-radius:10px;padding:12px;color:white;min-width:0}
+input::placeholder,textarea::placeholder{color:#817791}
+.search{flex:1;min-width:180px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
+.chip{border:1px solid var(--border);background:var(--panel);
+color:var(--muted);padding:8px 13px;border-radius:99px}
+.chip.active{background:#39265b;color:white;border-color:var(--purple)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:19px}
+.card{border:1px solid var(--border);background:var(--panel);
+border-radius:15px;overflow:hidden;min-width:0}
+.thumb{height:160px;position:relative;display:grid;place-items:center;
+background:linear-gradient(135deg,#30204b,#6140a1,#19112b);
+overflow:hidden}
+.thumb .big-star{font-size:62px;color:#ffffffa0}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.duration{position:absolute;right:9px;bottom:9px;background:#08060bdc;
+padding:3px 7px;border-radius:5px;font-size:11px}
+.card-body{padding:14px}
+.card-body p{font-size:13px;margin:7px 0}
+.meta{font-size:12px;color:var(--muted);display:flex;
+justify-content:space-between;gap:8px;flex-wrap:wrap}
+.tag{color:var(--light);font-size:11px}
+.card-actions{display:flex;gap:8px;margin-top:12px}
+.card-actions button{flex:1}
+.empty{border:1px dashed var(--border);padding:35px;text-align:center;
+border-radius:15px;color:var(--muted);grid-column:1/-1}
+.panel{max-width:600px;margin:30px auto;background:var(--panel);
+border:1px solid var(--border);padding:25px;border-radius:18px}
+.panel h2{margin-top:0}
+.field{display:grid;gap:7px;margin:15px 0}
+label{font-size:13px;color:#d9d0e9}
+.hint{font-size:12px;color:var(--muted)}
+.switch{display:flex;gap:8px;margin-bottom:18px}
+.switch button{flex:1}
+.status{min-height:24px;color:var(--light);font-size:13px}
+.status.error{color:#fca5a5}
+.profile{display:flex;gap:14px;align-items:center;margin-bottom:22px}
+.avatar{width:52px;height:52px;border-radius:16px;background:#39265b;
+display:grid;place-items:center;font-size:22px;color:var(--light)}
+footer{border-top:1px solid var(--border);padding:22px;
+text-align:center;color:var(--muted);font-size:12px}
+.video-overlay{position:fixed;inset:0;background:#08060bf2;z-index:20;
+display:none;align-items:center;justify-content:center;padding:20px}
+.video-overlay.open{display:flex}
+.video-box{width:min(900px,100%);background:var(--panel);
+border:1px solid var(--border);border-radius:16px;padding:16px}
+.video-box video{width:100%;max-height:65vh;background:black}
+.video-top{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.close{background:var(--panel2);color:white;border:1px solid var(--border);
+border-radius:9px;padding:8px 12px}
+.bottom-nav{display:none}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+header{padding:0 16px}.hero{padding:25px;min-height:260px}}
+@media(max-width:540px){header{height:65px}.brand{font-size:20px}
+header nav{gap:1px}nav button{padding:8px 9px;font-size:12px}
+main{padding:20px 14px 95px}.grid{grid-template-columns:1fr}
+.hero{padding:24px}.thumb{height:190px}
+.bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;
+z-index:6;justify-content:space-around;padding:10px 4px;
+background:#100b1cf7;border-top:1px solid var(--border)}
+.bottom-nav button{background:none;border:0;color:var(--muted);
+font-size:11px;display:grid;gap:3px;justify-items:center}
+.bottom-nav button span:first-child{font-size:19px}
+.section-head h2{font-size:21px}}
+</style>
 </head>
-
 <body>
-  <!-- Écran de connexion -->
-  <section id="authScreen" class="auth-wrap">
-    <div class="auth-card">
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 1.5C13.5 7.5 16.5 10.5 22.5 12 16.5 13.5 13.5 16.5 12 22.5 10.5 16.5 7.5 13.5 1.5 12 7.5 10.5 10.5 7.5 12 1.5Z"/>
-          </svg>
-        </div>
-        <span>Nova <span class="star">Hub</span></span>
+
+<header>
+  <div class="brand">
+    <span class="star">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <path d="M50 4 L61 39 L96 50 L61 61 L50 96 L39 61 L4 50 L39 39 Z"
+        fill="white"/>
+      </svg>
+    </span>
+    Nova Hub
+  </div>
+  <nav aria-label="Navigation principale">
+    <button class="active" data-page="home">Accueil</button>
+    <button data-page="account">Account</button>
+    <button data-page="upload">＋ Upload</button>
+  </nav>
+</header>
+
+<main>
+  <section id="home" class="page active">
+    <div class="hero">
+      <div class="hero-content">
+        <div class="eyebrow">✦ Your space. Your universe.</div>
+        <h1>Découvre ton<br>prochain univers.</h1>
+        <p>Des idées, des connaissances et des vidéos à partager.
+        Bienvenue sur Nova Hub.</p>
+        <button class="primary" id="explore">Explorer les vidéos ↗</button>
       </div>
+    </div>
 
-      <p class="eyebrow">Ton espace vidéo</p>
-      <h1 id="authTitle">Bienvenue sur Nova Hub</h1>
-      <p class="muted" id="authDescription">
-        Connecte-toi pour retrouver ta bibliothèque sur ce navigateur.
-      </p>
+    <div class="tools">
+      <input id="search" class="search" type="search"
+      placeholder="⌕  Rechercher une vidéo..." aria-label="Rechercher une vidéo">
+    </div>
 
-      <form id="authForm">
-        <div>
-          <label for="username">Nom d’utilisateur</label>
-          <input
-            class="field"
-            id="username"
-            name="username"
-            autocomplete="username"
-            minlength="3"
-            maxlength="24"
-            required
-            placeholder="Ton pseudo"
-          >
+    <div class="filters" id="filters">
+      <button class="chip active" data-category="Toutes">Tout</button>
+      <button class="chip" data-category="Éducation">Éducation</button>
+      <button class="chip" data-category="Technologie">Technologie</button>
+      <button class="chip" data-category="Science">Science</button>
+      <button class="chip" data-category="Personnel">Personnel</button>
+      <button class="chip" data-category="Créativité">Créativité</button>
+    </div>
+
+    <div class="section-head">
+      <h2>✦ À découvrir</h2>
+      <span class="hint" id="video-count"></span>
+    </div>
+    <div class="grid" id="videos"></div>
+    <p class="hint" style="margin-top:22px">
+      Les vidéos publiées sont visibles par les visiteurs. Publie uniquement
+      des contenus que tu as le droit de partager.
+    </p>
+  </section>
+
+  <section id="account" class="page">
+    <div class="panel">
+      <div class="eyebrow">Ton espace Nova</div>
+      <h2>Account</h2>
+      <div id="signed-out">
+        <div class="switch">
+          <button class="primary" id="show-login">Connexion</button>
+          <button class="secondary" id="show-signup">Créer un compte</button>
         </div>
-
-        <div>
-          <label for="password">Mot de passe</label>
-          <input
-            class="field"
-            id="password"
-            name="password"
-            type="password"
-            autocomplete="current-password"
-            minlength="6"
-            required
-            placeholder="6 caractères minimum"
-          >
+        <form id="auth-form">
+          <div class="field" id="username-field" hidden>
+            <label for="username">Username</label>
+            <input id="username" autocomplete="username" maxlength="24"
+            placeholder="ex. NovaCreator">
+          </div>
+          <div class="field">
+            <label for="email">Adresse e-mail</label>
+            <input id="email" type="email" required autocomplete="email"
+            placeholder="toi@exemple.fr">
+          </div>
+          <div class="field">
+            <label for="password">Mot de passe (8 caractères minimum)</label>
+            <input id="password" type="password" required minlength="8"
+            autocomplete="current-password" placeholder="••••••••">
+          </div>
+          <button class="primary" id="auth-submit" type="submit" style="width:100%">
+            Se connecter
+          </button>
+          <p class="hint">L'e-mail sert à l'authentification et à la récupération
+          du compte. Ton username sera affiché sur tes vidéos.</p>
+        </form>
+      </div>
+      <div id="signed-in" hidden>
+        <div class="profile">
+          <div class="avatar">✦</div>
+          <div><h3 id="profile-name"></h3><p id="profile-email"></p></div>
         </div>
-
-        <button class="btn primary" id="authSubmit" type="submit">
-          Se connecter
-        </button>
-      </form>
-
-      <p class="auth-switch">
-        <span id="switchText">Pas encore de compte ?</span>
-        <button class="text-button" id="switchAuth" type="button">
-          Créer un compte
-        </button>
-      </p>
-
-      <p class="notice" id="authNotice" role="status" aria-live="polite"></p>
-
-      <p class="upload-help">
-        Prototype local : les comptes et les vidéos restent sur cet appareil
-        et ce navigateur. N’utilise pas un vrai mot de passe.
-      </p>
+        <p>Bienvenue dans ton espace créateur.</p>
+        <button class="primary" id="go-upload">＋ Publier une vidéo</button>
+        <button class="secondary" id="logout">Se déconnecter</button>
+      </div>
+      <p class="status" id="auth-status" role="status"></p>
     </div>
   </section>
 
-  <!-- Application principale -->
-  <div id="appScreen" class="app hidden">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 1.5C13.5 7.5 16.5 10.5 22.5 12 16.5 13.5 13.5 16.5 12 22.5 10.5 16.5 7.5 13.5 1.5 12 7.5 10.5 10.5 7.5 12 1.5Z"/>
-          </svg>
+  <section id="upload" class="page">
+    <div class="panel">
+      <div class="eyebrow">Creator Studio</div>
+      <h2>Publier une vidéo</h2>
+      <p>Partage tes vidéos éducatives ou personnelles avec la communauté.</p>
+      <div id="upload-locked">
+        <p>Tu dois te connecter à ton compte pour publier.</p>
+        <button class="primary" id="login-first">Aller à Account</button>
+      </div>
+      <form id="upload-form" hidden>
+        <div class="field">
+          <label for="video-title">Titre</label>
+          <input id="video-title" maxlength="100" required
+          placeholder="Le titre de ta vidéo">
         </div>
-        <span>Nova <span class="star">Hub</span></span>
-      </div>
-
-      <input
-        class="field search"
-        id="search"
-        type="search"
-        placeholder="⌕  Rechercher une vidéo..."
-        aria-label="Rechercher une vidéo"
-      >
-
-      <div class="user-chip">
-        <div class="avatar" id="avatar">N</div>
-        <span class="user-name" id="userName">Utilisateur</span>
-        <button class="btn" id="logout" type="button">Déconnexion</button>
-      </div>
-    </header>
-
-    <div class="layout">
-      <aside>
-        <nav class="nav" aria-label="Navigation principale">
-          <button class="active" data-page="home" type="button">
-            <span class="nav-icon">⌂</span><span>Accueil</span>
-          </button>
-          <button data-page="library" type="button">
-            <span class="nav-icon">▤</span><span>Ma bibliothèque</span>
-          </button>
-          <button data-page="upload" type="button">
-            <span class="nav-icon">＋</span><span>Importer</span>
-          </button>
-        </nav>
-
-        <p class="side-note">
-          <span class="star">✦</span>
-          Ton espace pour apprendre, découvrir et conserver tes vidéos.
-        </p>
-      </aside>
-
-      <main class="content">
-        <!-- Accueil -->
-        <section id="homePage" class="page">
-          <div class="hero">
-            <p class="eyebrow">Bienvenue dans ton univers</p>
-            <h1>Chaque vidéo ouvre un nouvel horizon<span class="star"> ✦</span></h1>
-            <p>
-              Rassemble tes vidéos personnelles et éducatives dans une
-              bibliothèque simple, organisée et à toi.
-            </p>
-            <div class="hero-actions">
-              <button class="btn primary" data-go="upload" type="button">
-                ＋ Importer une vidéo
-              </button>
-              <button class="btn" data-go="library" type="button">
-                Explorer ma bibliothèque →
-              </button>
-            </div>
-          </div>
-
-          <div class="section-head">
-            <div>
-              <h2>Ajouts récents</h2>
-              <p>Retrouve ici tes dernières vidéos importées.</p>
-            </div>
-          </div>
-
-          <div id="recentGrid" class="video-grid"></div>
-        </section>
-
-        <!-- Bibliothèque -->
-        <section id="libraryPage" class="page hidden">
-          <div class="section-head" style="margin-top:0">
-            <div>
-              <h1>Ma bibliothèque</h1>
-              <p>Toutes tes vidéos enregistrées dans ce navigateur.</p>
-            </div>
-            <button class="btn primary" data-go="upload" type="button">
-              ＋ Importer
-            </button>
-          </div>
-
-          <div id="libraryGrid" class="video-grid"></div>
-        </section>
-
-        <!-- Import -->
-        <section id="uploadPage" class="page hidden">
-          <div class="panel">
-            <p class="eyebrow">Nouvel ajout</p>
-            <h1>Importer une vidéo <span class="star">✦</span></h1>
-            <p class="muted">
-              Choisis un fichier vidéo sur ton appareil et ajoute quelques informations.
-            </p>
-
-            <form class="upload-form" id="uploadForm">
-              <div class="dropzone">
-                <div style="font-size:2rem;color:#d8b4fe">⇧</div>
-                <strong>Choisis ton fichier vidéo</strong>
-                <p class="upload-help">
-                  MP4, WebM, Ogg et autres formats pris en charge par ton navigateur.
-                </p>
-                <input id="videoFile" type="file" accept="video/*" required>
-              </div>
-
-              <div>
-                <label for="videoTitle">Titre</label>
-                <input
-                  class="field"
-                  id="videoTitle"
-                  maxlength="100"
-                  required
-                  placeholder="Ex. : Cours de sciences — chapitre 1"
-                >
-              </div>
-
-              <div>
-                <label for="videoDescription">Description (facultatif)</label>
-                <textarea
-                  class="field"
-                  id="videoDescription"
-                  rows="3"
-                  maxlength="1000"
-                  placeholder="Quelques mots sur cette vidéo..."
-                ></textarea>
-              </div>
-
-              <p class="upload-help">
-                Le fichier reste sur cet appareil. Pour une vraie plateforme
-                en ligne, il faudrait ajouter un serveur de stockage.
-              </p>
-
-              <button class="btn primary" type="submit">
-                Enregistrer dans ma bibliothèque
-              </button>
-              <p id="uploadStatus" class="status" role="status" aria-live="polite"></p>
-            </form>
-          </div>
-        </section>
-
-        <!-- Lecteur -->
-        <section id="watchPage" class="page hidden">
-          <button
-            class="btn"
-            data-go="library"
-            type="button"
-            style="margin-bottom:18px"
-          >
-            ← Retour à la bibliothèque
-          </button>
-          <div id="watchContent"></div>
-        </section>
-
-        <footer>✦ Nova Hub · Ton espace vidéo personnel</footer>
-      </main>
+        <div class="field">
+          <label for="video-description">Description</label>
+          <textarea id="video-description" rows="3" maxlength="1000"
+          placeholder="De quoi parle ta vidéo ?"></textarea>
+        </div>
+        <div class="field">
+          <label for="video-category">Catégorie</label>
+          <select id="video-category">
+            <option>Éducation</option><option>Technologie</option>
+            <option>Science</option><option>Personnel</option>
+            <option>Créativité</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="video-file">Fichier vidéo (MP4, WebM ou MOV)</label>
+          <input id="video-file" type="file" accept="video/mp4,video/webm,video/quicktime"
+          required>
+          <p class="hint">Taille maximale : 100 Mo pour ce prototype.</p>
+        </div>
+        <button class="primary" type="submit" id="publish-button"
+        style="width:100%">Publier sur Nova Hub ↗</button>
+      </form>
+      <p class="status" id="upload-status" role="status"></p>
     </div>
+  </section>
+</main>
+
+<div class="video-overlay" id="video-overlay" role="dialog"
+aria-modal="true" aria-label="Lecteur vidéo">
+  <div class="video-box">
+    <div class="video-top">
+      <h3 id="player-title">Vidéo</h3>
+      <button class="close" id="close-player" aria-label="Fermer">✕</button>
+    </div>
+    <video id="player" controls playsinline></video>
+    <p id="player-description"></p>
   </div>
+</div>
 
-  <script>
-    (() => {
-      "use strict";
+<div class="bottom-nav" aria-label="Navigation mobile">
+  <button data-page="home"><span>⌂</span><span>Accueil</span></button>
+  <button data-page="upload"><span>⊕</span><span>Upload</span></button>
+  <button data-page="account"><span>♙</span><span>Account</span></button>
+</div>
 
-      const $ = selector => document.querySelector(selector);
-      const authScreen = $("#authScreen");
-      const appScreen = $("#appScreen");
-      const authForm = $("#authForm");
-      const authNotice = $("#authNotice");
+<footer>✦ Nova Hub · Watch. Learn. Share. · Prototype indépendant</footer>
 
-      const DB_NAME = "nova-hub-db";
-      const DB_VERSION = 1;
-      const MAX_VIDEO_SIZE = 150 * 1024 * 1024;
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* 1. Remplace ces deux valeurs par celles de TON projet Supabase. */
+const SUPABASE_URL = "COLLE_ICI_TON_PROJECT_URL";
+const SUPABASE_KEY = "COLLE_ICI_TA_PUBLISHABLE_KEY";
 
-      let authMode = "login";
-      let currentUser = null;
-      let db = null;
-      let objectUrls = [];
+const configured =
+  SUPABASE_URL.startsWith("https://") &&
+  SUPABASE_KEY.startsWith("sb_publishable_");
 
-      /* Base de données locale */
-      function openDatabase() {
-        return new Promise((resolve, reject) => {
-          if (!("indexedDB" in window)) {
-            reject(new Error(
-              "Ce navigateur ne prend pas en charge le stockage local requis."
-            ));
-            return;
-          }
+const db = configured
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  : null;
 
-          const request = indexedDB.open(DB_NAME, DB_VERSION);
+let currentUser = null;
+let mode = "login";
+let selectedCategory = "Toutes";
+let allVideos = [];
 
-          request.onupgradeneeded = () => {
-            const database = request.result;
+const $ = id => document.getElementById(id);
 
-            if (!database.objectStoreNames.contains("users")) {
-              database.createObjectStore("users", { keyPath: "username" });
-            }
+function status(id, message, error = false) {
+  const el = $(id);
+  el.textContent = message;
+  el.classList.toggle("error", error);
+}
 
-            if (!database.objectStoreNames.contains("videos")) {
-              const store = database.createObjectStore("videos", {
-                keyPath: "id",
-                autoIncrement: true
-              });
-              store.createIndex("owner", "owner", { unique: false });
-            }
-          };
+function safeText(value) {
+  return String(value ?? "");
+}
 
-          request.onsuccess = () => resolve(request.result);
-          request.onerror = () => reject(
-            request.error || new Error("Impossible d’ouvrir la base locale.")
-          );
-        });
-      }
+function go(page) {
+  if (page === "upload" && !currentUser) {
+    $("upload-locked").hidden = false;
+    $("upload-form").hidden = true;
+  }
+  document.querySelectorAll(".page").forEach(p =>
+    p.classList.toggle("active", p.id === page));
+  document.querySelectorAll("[data-page]").forEach(b =>
+    b.classList.toggle("active", b.dataset.page === page));
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
 
-      function storeRequest(storeName, mode, action) {
-        return new Promise((resolve, reject) => {
-          const tx = db.transaction(storeName, mode);
-          const store = tx.objectStore(storeName);
-          let request;
+document.querySelectorAll("[data-page]").forEach(b =>
+  b.addEventListener("click", () => go(b.dataset.page)));
 
-          try {
-            request = action(store);
-          } catch (error) {
-            reject(error);
-            return;
-          }
+$("explore").addEventListener("click", () =>
+  $("search").focus());
 
-          request.onsuccess = () => resolve(request.result);
-          request.onerror = () => reject(
-            request.error || new Error("Erreur de stockage.")
-          );
-          tx.onabort = () => reject(
-            tx.error || new Error("Opération annulée.")
-          );
-        });
-      }
+$("show-login").addEventListener("click", () => setMode("login"));
+$("show-signup").addEventListener("click", () => setMode("signup"));
 
-      const getUser = username =>
-        storeRequest("users", "readonly", store => store.get(username));
+function setMode(next) {
+  mode = next;
+  $("username-field").hidden = mode !== "signup";
+  $("username").required = mode === "signup";
+  $("password").autocomplete = mode === "signup" ? "new-password" : "current-password";
+  $("auth-submit").textContent =
+    mode === "signup" ? "Créer mon compte" : "Se connecter";
+  $("show-login").className = mode === "login" ? "primary" : "secondary";
+  $("show-signup").className = mode === "signup" ? "primary" : "secondary";
+  status("auth-status", "");
+}
 
-      const putUser = user =>
-        storeRequest("users", "readwrite", store => store.put(user));
+function updateAccount() {
+  $("signed-out").hidden = !!currentUser;
+  $("signed-in").hidden = !currentUser;
+  $("upload-locked").hidden = !!currentUser;
+  $("upload-form").hidden = !currentUser;
+  if (currentUser) {
+    $("profile-name").textContent =
+      currentUser.user_metadata?.username || "Créateur Nova";
+    $("profile-email").textContent = currentUser.email || "";
+  }
+}
 
-      const getVideo = id =>
-        storeRequest("videos", "readonly", store => store.get(Number(id)));
+$("auth-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (!db) return status("auth-status",
+    "Configure d'abord les clés Supabase dans le code.", true);
 
-      const putVideo = video =>
-        storeRequest("videos", "readwrite", store => store.put(video));
+  const email = $("email").value.trim();
+  const password = $("password").value;
+  const username = $("username").value.trim();
 
-      const deleteVideo = id =>
-        storeRequest("videos", "readwrite", store => store.delete(Number(id)));
+  if (mode === "signup" &&
+      !/^[a-zA-Z0-9_-]{3,24}$/.test(username)) {
+    return status("auth-status",
+      "Le username doit faire 3 à 24 caractères : lettres, chiffres, _ ou -.", true);
+  }
 
-      function getVideos() {
-        return storeRequest("videos", "readonly", store => store.getAll())
-          .then(rows =>
-            rows
-              .filter(row => row.owner === currentUser)
-              .sort((a, b) => b.createdAt - a.createdAt)
-          );
-      }
+  $("auth-submit").disabled = true;
+  status("auth-status", mode === "signup"
+    ? "Création du compte…" : "Connexion…");
 
-      /* Protection des mots de passe pour ce prototype */
-      async function hashPassword(password, saltHex) {
-        if (!crypto.subtle) {
-          throw new Error(
-            "Le chiffrement sécurisé n’est pas disponible. Ouvre le site en HTTPS ou sur localhost."
-          );
-        }
-
-        const salt = saltHex
-          ? Uint8Array.from(
-              saltHex.match(/.{2}/g).map(byte => parseInt(byte, 16))
-            )
-          : crypto.getRandomValues(new Uint8Array(16));
-
-        const key = await crypto.subtle.importKey(
-          "raw",
-          new TextEncoder().encode(password),
-          "PBKDF2",
-          false,
-          ["deriveBits"]
-        );
-
-        const bits = await crypto.subtle.deriveBits(
-          {
-            name: "PBKDF2",
-            salt,
-            iterations: 150000,
-            hash: "SHA-256"
-          },
-          key,
-          256
-        );
-
-        const hex = bytes =>
-          Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join("");
-
-        return {
-          salt: hex(salt),
-          hash: hex(new Uint8Array(bits))
-        };
-      }
-
-      /* Connexion et création de compte */
-      function setAuthMode(mode) {
-        authMode = mode;
-        const registering = mode === "register";
-
-        $("#authTitle").textContent = registering
-          ? "Créer ton espace"
-          : "Bienvenue sur Nova Hub";
-
-        $("#authDescription").textContent = registering
-          ? "Choisis un pseudo et un mot de passe pour ce navigateur."
-          : "Connecte-toi pour retrouver ta bibliothèque sur ce navigateur.";
-
-        $("#authSubmit").textContent = registering
-          ? "Créer mon compte"
-          : "Se connecter";
-
-        $("#switchText").textContent = registering
-          ? "Tu as déjà un compte ?"
-          : "Pas encore de compte ?";
-
-        $("#switchAuth").textContent = registering
-          ? "Se connecter"
-          : "Créer un compte";
-
-        $("#password").autocomplete = registering
-          ? "new-password"
-          : "current-password";
-
-        authNotice.textContent = "";
-      }
-
-      $("#switchAuth").addEventListener("click", () => {
-        setAuthMode(authMode === "login" ? "register" : "login");
+  try {
+    if (mode === "signup") {
+      const {data, error} = await db.auth.signUp({
+        email, password,
+        options: {data: {username}}
       });
+      if (error) throw error;
 
-      authForm.addEventListener("submit", async event => {
-        event.preventDefault();
-        authNotice.textContent = "";
-
-        const username = $("#username").value.trim().toLowerCase();
-        const password = $("#password").value;
-
-        if (!/^[a-z0-9_-]{3,24}$/.test(username)) {
-          authNotice.textContent =
-            "Le pseudo doit contenir 3 à 24 caractères : lettres sans accent, chiffres, _ ou -.";
-          return;
-        }
-
-        if (password.length < 6) {
-          authNotice.textContent =
-            "Le mot de passe doit contenir au moins 6 caractères.";
-          return;
-        }
-
-        const submit = $("#authSubmit");
-        submit.disabled = true;
-        submit.textContent = "Patiente…";
-
-        try {
-          const existing = await getUser(username);
-
-          if (authMode === "register") {
-            if (existing) {
-              throw new Error(
-                "Ce nom d’utilisateur existe déjà sur ce navigateur."
-              );
-            }
-
-            const credentials = await hashPassword(password);
-
-            await putUser({
-              username,
-              ...credentials,
-              createdAt: Date.now()
-            });
-
-            currentUser = username;
-            enterApp();
-          } else {
-            if (!existing) {
-              throw new Error(
-                "Compte introuvable sur ce navigateur. Crée un compte pour commencer."
-              );
-            }
-
-            const credentials = await hashPassword(password, existing.salt);
-
-            if (credentials.hash !== existing.hash) {
-              throw new Error("Mot de passe incorrect.");
-            }
-
-            currentUser = username;
-            enterApp();
-          }
-        } catch (error) {
-          authNotice.textContent = error.message || "Une erreur est survenue.";
-        } finally {
-          submit.disabled = false;
-          submit.textContent = authMode === "register"
-            ? "Créer mon compte"
-            : "Se connecter";
-        }
-      });
-
-      /* Affichage et navigation */
-      function revokeObjectUrls() {
-        objectUrls.forEach(url => URL.revokeObjectURL(url));
-        objectUrls = [];
+      if (data.session) {
+        status("auth-status", "Compte créé ! Bienvenue sur Nova Hub.");
+      } else {
+        status("auth-status",
+          "Inscription envoyée. Vérifie ton e-mail si une confirmation est demandée.");
       }
+    } else {
+      const {error} = await db.auth.signInWithPassword({email, password});
+      if (error) throw error;
+      status("auth-status", "Connexion réussie !");
+    }
+  } catch (err) {
+    status("auth-status", err.message || "Une erreur est survenue.", true);
+  } finally {
+    $("auth-submit").disabled = false;
+  }
+});
 
-      function enterApp() {
-        authScreen.classList.add("hidden");
-        appScreen.classList.remove("hidden");
-        $("#userName").textContent = currentUser;
-        $("#avatar").textContent = currentUser.charAt(0).toUpperCase();
-        $("#search").value = "";
-        showPage("home");
-      }
+$("logout").addEventListener("click", async () => {
+  if (!db) return;
+  const {error} = await db.auth.signOut();
+  if (error) return status("auth-status", error.message, true);
+  status("auth-status", "Tu es déconnecté.");
+});
 
-      function logout() {
-        currentUser = null;
-        revokeObjectUrls();
-        appScreen.classList.add("hidden");
-        authScreen.classList.remove("hidden");
-        authForm.reset();
-        setAuthMode("login");
-      }
+$("go-upload").addEventListener("click", () => go("upload"));
+$("login-first").addEventListener("click", () => go("account"));
 
-      $("#logout").addEventListener("click", logout);
+function renderVideos() {
+  const query = $("search").value.trim().toLowerCase();
+  const shown = allVideos.filter(v => {
+    const matchesCategory = selectedCategory === "Toutes" ||
+      v.category === selectedCategory;
+    const text = `${v.title} ${v.description || ""} ${v.username || ""}`
+      .toLowerCase();
+    return matchesCategory && text.includes(query);
+  });
 
-      function showPage(name) {
-        document.querySelectorAll(".page").forEach(page => {
-          page.classList.add("hidden");
-        });
+  $("video-count").textContent = `${shown.length} vidéo(s)`;
+  const container = $("videos");
+  container.replaceChildren();
 
-        const page = $("#" + name + "Page");
-        if (page) page.classList.remove("hidden");
+  if (!shown.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = allVideos.length
+      ? "Aucune vidéo ne correspond à ta recherche."
+      : "Pas encore de vidéos. Connecte-toi pour publier la première ✦";
+    container.append(empty);
+    return;
+  }
 
-        document.querySelectorAll("[data-page]").forEach(button => {
-          button.classList.toggle("active", button.dataset.page === name);
-        });
+  for (const v of shown) {
+    const card = document.createElement("article");
+    card.className = "card";
 
-        if (name === "home" || name === "library") {
-          renderVideos();
-        }
+    const thumb = document.createElement("div");
+    thumb.className = "thumb";
+    const star = document.createElement("span");
+    star.className = "big-star";
+    star.textContent = "✦";
+    thumb.append(star);
 
-        if (name !== "watch") {
-          $("#watchContent").replaceChildren();
-        }
-      }
+    const body = document.createElement("div");
+    body.className = "card-body";
 
-      document.querySelectorAll("[data-page]").forEach(button => {
-        button.addEventListener("click", () => showPage(button.dataset.page));
-      });
+    const tag = document.createElement("div");
+    tag.className = "tag";
+    tag.textContent = v.category || "Découverte";
 
-      document.querySelectorAll("[data-go]").forEach(button => {
-        button.addEventListener("click", () => showPage(button.dataset.go));
-      });
+    const title = document.createElement("h3");
+    title.textContent = v.title;
 
-      function formatSize(bytes) {
-        if (bytes < 1024 * 1024) {
-          return Math.max(1, Math.round(bytes / 1024)) + " Ko";
-        }
+    const desc = document.createElement("p");
+    desc.textContent = v.description || "Découvre cette vidéo sur Nova Hub.";
 
-        return (bytes / (1024 * 1024)).toFixed(1) + " Mo";
-      }
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    const author = document.createElement("span");
+    author.textContent = "✦ " + (v.username || "Créateur Nova");
+    const date = document.createElement("span");
+    date.textContent = v.created_at
+      ? new Date(v.created_at).toLocaleDateString("fr-FR") : "";
+    meta.append(author, date);
 
-      function makeObjectUrl(blob) {
-        const url = URL.createObjectURL(blob);
-        objectUrls.push(url);
-        return url;
-      }
+    const actions = document.createElement("div");
+    actions.className = "card-actions";
+    const play = document.createElement("button");
+    play.className = "primary";
+    play.textContent = "▶ Regarder";
+    play.addEventListener("click", () => openVideo(v));
 
-      /* Affichage des vidéos */
-      async function renderVideos() {
-        if (!currentUser) return;
+    actions.append(play);
+    body.append(tag, title, desc, meta, actions);
+    card.append(thumb, body);
+    container.append(card);
+  }
+}
 
-        const all = await getVideos();
-        const query = $("#search").value.trim().toLocaleLowerCase("fr");
+async function loadVideos() {
+  if (!db) {
+    status("auth-status",
+      "Ajoute tes clés Supabase pour activer les comptes et les vidéos.", true);
+    renderVideos();
+    return;
+  }
 
-        const videos = all.filter(video =>
-          (video.title + " " + (video.description || ""))
-            .toLocaleLowerCase("fr")
-            .includes(query)
-        );
+  const {data, error} = await db.from("videos")
+    .select("id,user_id,username,title,description,category,video_path,created_at")
+    .order("created_at", {ascending: false})
+    .limit(100);
 
-        renderGrid($("#recentGrid"), videos.slice(0, 3));
-        renderGrid($("#libraryGrid"), videos);
-      }
+  if (error) {
+    console.error(error);
+    $("videos").replaceChildren();
+    const msg = document.createElement("div");
+    msg.className = "empty";
+    msg.textContent = "Impossible de charger les vidéos. Vérifie la configuration Supabase.";
+    $("videos").append(msg);
+    return;
+  }
 
-      function renderGrid(container, videos) {
-        container.replaceChildren();
+  allVideos = (data || []).map(v => ({
+    ...v,
+    url: db.storage.from("videos").getPublicUrl(v.video_path).data.publicUrl
+  }));
+  renderVideos();
+}
 
-        if (!videos.length) {
-          const empty = document.createElement("div");
-          empty.className = "empty";
+$("search").addEventListener("input", renderVideos);
 
-          const star = document.createElement("span");
-          star.className = "big-star";
-          star.textContent = "✦";
+$("filters").addEventListener("click", e => {
+  const btn = e.target.closest("[data-category]");
+  if (!btn) return;
+  selectedCategory = btn.dataset.category;
+  $("filters").querySelectorAll("button").forEach(b =>
+    b.classList.toggle("active", b === btn));
+  renderVideos();
+});
 
-          const title = document.createElement("strong");
-          title.textContent = "Aucune vidéo pour le moment";
+function openVideo(v) {
+  $("player-title").textContent = v.title;
+  $("player-description").textContent = v.description || "";
+  $("player").src = v.url;
+  $("video-overlay").classList.add("open");
+  $("player").play().catch(() => {});
+}
 
-          const description = document.createElement("p");
-          description.textContent =
-            "Importe ta première vidéo pour commencer ta bibliothèque.";
+function closeVideo() {
+  $("player").pause();
+  $("player").removeAttribute("src");
+  $("player").load();
+  $("video-overlay").classList.remove("open");
+}
 
-          const button = document.createElement("button");
-          button.className = "btn primary";
-          button.type = "button";
-          button.textContent = "＋ Importer une vidéo";
-          button.addEventListener("click", () => showPage("upload"));
+$("close-player").addEventListener("click", closeVideo);
+$("video-overlay").addEventListener("click", e => {
+  if (e.target === $("video-overlay")) closeVideo();
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeVideo();
+});
 
-          empty.append(star, title, description, button);
-          container.appendChild(empty);
-          return;
-        }
+$("upload-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (!db || !currentUser) {
+    go("account");
+    return status("upload-status", "Connecte-toi avant de publier.", true);
+  }
 
-        videos.forEach(video => {
-          const card = document.createElement("article");
-          card.className = "video-card";
+  const file = $("video-file").files[0];
+  const title = $("video-title").value.trim();
 
-          const thumb = document.createElement("div");
-          thumb.className = "thumb";
+  if (!file) return status("upload-status", "Choisis un fichier vidéo.", true);
+  if (file.size > 100 * 1024 * 1024)
+    return status("upload-status", "Le fichier dépasse la limite de 100 Mo.", true);
+  if (!["video/mp4", "video/webm", "video/quicktime"].includes(file.type))
+    return status("upload-status", "Format non pris en charge. Choisis MP4, WebM ou MOV.", true);
+  if (!title) return status("upload-status", "Ajoute un titre.", true);
 
-          const preview = document.createElement("video");
-          preview.src = makeObjectUrl(video.blob);
-          preview.preload = "metadata";
-          preview.muted = true;
-          preview.playsInline = true;
-          preview.setAttribute("aria-label", "Aperçu de " + video.title);
+  const button = $("publish-button");
+  button.disabled = true;
+  status("upload-status", "Envoi de la vidéo… Ne ferme pas cette page.");
 
-          preview.addEventListener("loadeddata", () => {
-            try {
-              preview.currentTime = Math.min(1, preview.duration || 0);
-            } catch {}
-          }, { once: true });
+  try {
+    const ext = ({ "video/mp4":"mp4", "video/webm":"webm",
+      "video/quicktime":"mov" })[file.type];
+    const path = `${currentUser.id}/${crypto.randomUUID()}.${ext}`;
 
-          const playBadge = document.createElement("span");
-          playBadge.className = "play-badge";
-          playBadge.textContent = "▶";
-          thumb.append(preview, playBadge);
+    const {error: storageError} = await db.storage.from("videos")
+      .upload(path, file, {contentType: file.type, upsert: false});
+    if (storageError) throw storageError;
 
-          const body = document.createElement("div");
-          body.className = "card-body";
+    const {error: insertError} = await db.from("videos").insert({
+      user_id: currentUser.id,
+      username: currentUser.user_metadata?.username || "Créateur Nova",
+      title,
+      description: $("video-description").value.trim(),
+      category: $("video-category").value,
+      video_path: path
+    });
 
-          const title = document.createElement("h3");
-          title.textContent = video.title;
+    if (insertError) {
+      await db.storage.from("videos").remove([path]);
+      throw insertError;
+    }
 
-          const description = document.createElement("p");
-          description.textContent =
-            (video.description || "Aucune description") +
-            " · " + formatSize(video.size);
+    $("upload-form").reset();
+    status("upload-status", "Vidéo publiée avec succès ! ✦");
+    await loadVideos();
+    go("home");
+  } catch (err) {
+    console.error(err);
+    status("upload-status",
+      err.message || "La publication a échoué. Vérifie les règles de stockage.", true);
+  } finally {
+    button.disabled = false;
+  }
+});
 
-          const actions = document.createElement("div");
-          actions.className = "card-actions";
+async function init() {
+  if (!db) {
+    updateAccount();
+    renderVideos();
+    return;
+  }
+  const {data: {session}} = await db.auth.getSession();
+  currentUser = session?.user || null;
+  updateAccount();
+  await loadVideos();
 
-          const open = document.createElement("button");
-          open.className = "btn primary";
-          open.type = "button";
-          open.textContent = "▶ Lire";
-          open.addEventListener("click", () => watchVideo(video.id));
+  db.auth.onAuthStateChange((_event, session) => {
+    currentUser = session?.user || null;
+    updateAccount();
+    if (!currentUser && $("upload").classList.contains("active")) go("home");
+    if (currentUser) loadVideos();
+  });
+}
 
-          const remove = document.createElement("button");
-          remove.className = "btn danger";
-          remove.type = "button";
-          remove.textContent = "Supprimer";
-
-          remove.addEventListener("click", async () => {
-            if (!confirm(
-              "Supprimer « " + video.title + " » de ta bibliothèque ?"
-            )) return;
-
-            await deleteVideo(video.id);
-            await renderVideos();
-          });
-
-          actions.append(open, remove);
-          body.append(title, description, actions);
-          card.append(thumb, body);
-          container.appendChild(card);
-        });
-      }
-
-      /* Lecture d'une vidéo */
-      async function watchVideo(id) {
-        const video = await getVideo(id);
-
-        if (!video || video.owner !== currentUser) return;
-
-        showPage("watch");
-
-        const content = $("#watchContent");
-        content.replaceChildren();
-
-        const box = document.createElement("div");
-        box.className = "player-box";
-
-        const player = document.createElement("video");
-        player.controls = true;
-        player.autoplay = true;
-        player.playsInline = true;
-        player.src = makeObjectUrl(video.blob);
-
-        const info = document.createElement("div");
-        info.className = "player-info";
-
-        const title = document.createElement("h2");
-        title.textContent = video.title;
-
-        const description = document.createElement("p");
-        description.textContent = video.description || "Aucune description.";
-
-        const size = document.createElement("p");
-        size.className = "upload-help";
-        size.textContent = "Fichier local · " + formatSize(video.size);
-
-        info.append(title, description, size);
-        box.append(player, info);
-        content.appendChild(box);
-      }
-
-      $("#search").addEventListener("input", renderVideos);
-
-      /* Importation d'une vidéo */
-      $("#uploadForm").addEventListener("submit", async event => {
-        event.preventDefault();
-
-        const status = $("#uploadStatus");
-        status.textContent = "";
-
-        const file = $("#videoFile").files[0];
-        const title = $("#videoTitle").value.trim();
-        const description = $("#videoDescription").value.trim();
-
-        if (!file) {
-          status.textContent = "Choisis une vidéo à importer.";
-          return;
-        }
-
-        if (!file.type.startsWith("video/")) {
-          status.textContent =
-            "Le fichier choisi ne semble pas être une vidéo.";
-          return;
-        }
-
-        if (file.size > MAX_VIDEO_SIZE) {
-          status.textContent =
-            "La taille maximale de ce prototype est de 150 Mo par vidéo.";
-          return;
-        }
-
-        const submit = event.submitter;
-        submit.disabled = true;
-        submit.textContent = "Enregistrement…";
-
-        try {
-          await putVideo({
-            owner: currentUser,
-            title,
-            description,
-            blob: file,
-            size: file.size,
-            type: file.type,
-            createdAt: Date.now()
-          });
-
-          $("#uploadForm").reset();
-          status.textContent = "Vidéo enregistrée dans ta bibliothèque ✦";
-
-          await renderVideos();
-          setTimeout(() => showPage("library"), 500);
-        } catch (error) {
-          status.textContent =
-            "Impossible d’enregistrer cette vidéo. Le stockage du navigateur est peut-être plein.";
-        } finally {
-          submit.disabled = false;
-          submit.textContent = "Enregistrer dans ma bibliothèque";
-        }
-      });
-
-      /* Démarrage */
-      async function init() {
-        try {
-          db = await openDatabase();
-        } catch (error) {
-          authNotice.textContent =
-            error.message + " Vérifie les paramètres du navigateur.";
-          $("#authSubmit").disabled = true;
-        }
-      }
-
-      init();
-    })();
-  </script>
+init();
+</script>
 </body>
 </html>
