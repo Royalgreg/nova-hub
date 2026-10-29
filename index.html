@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,370 +5,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0b0712">
   <title>Nova Hub</title>
-
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
-    :root {
-      --bg: #0b0712;
-      --panel: #130d20;
-      --purple: #a855f7;
-      --purple-light: #c084fc;
-      --text: #f5efff;
-      --muted: #9285a5;
-      --border: rgba(192, 132, 252, 0.16);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      min-height: 100vh;
-      background:
-        radial-gradient(ellipse at 50% 0%, #29103f 0%, transparent 48%),
-        var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-    }
-
-    header {
-      height: 78px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 7%;
-      border-bottom: 1px solid var(--border);
-      background: rgba(11, 7, 18, 0.8);
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 21px;
-      font-weight: 800;
-      letter-spacing: -0.8px;
-    }
-
-    .star {
-      color: var(--purple-light);
-      font-size: 36px;
-      line-height: 1;
-      filter: drop-shadow(0 0 12px #a855f780);
-    }
-
-    .status {
-      color: #c4b5fd;
-      font-size: 12px;
-      border: 1px solid var(--border);
-      border-radius: 30px;
-      padding: 8px 13px;
-      background: #a855f70c;
-    }
-
-    main {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 75px 22px 60px;
-    }
-
-    .hero {
-      text-align: center;
-      margin-bottom: 42px;
-    }
-
-    .eyebrow {
-      display: inline-block;
-      color: var(--purple-light);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 3px;
-      margin-bottom: 22px;
-    }
-
-    h1 {
-      font-size: clamp(42px, 8vw, 68px);
-      letter-spacing: -3px;
-      font-weight: 800;
-      line-height: 1.08;
-    }
-
-    h1 span {
-      background: linear-gradient(100deg, #c084fc, #9333ea, #e9d5ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.8;
-      margin: 18px auto 0;
-      max-width: 470px;
-    }
-
-    .viewer {
-      background: linear-gradient(145deg, #181025, #100b19);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 24px;
-      box-shadow: 0 25px 100px #0005;
-    }
-
-    .field-label {
-      display: block;
-      font-size: 12px;
-      color: #c4b5fd;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    .input-row {
-      display: flex;
-      gap: 10px;
-    }
-
-    input {
-      flex: 1;
-      min-width: 0;
-      height: 49px;
-      background: #0b0712;
-      color: white;
-      border: 1px solid #392449;
-      border-radius: 10px;
-      padding: 0 14px;
-      font-family: inherit;
-      font-size: 13px;
-      outline: none;
-      transition: border 0.2s;
-    }
-
-    input:focus {
-      border-color: var(--purple);
-      box-shadow: 0 0 0 3px #a855f719;
-    }
-
-    input::placeholder {
-      color: #665873;
-    }
-
-    button {
-      border: 0;
-      border-radius: 10px;
-      padding: 0 22px;
-      color: white;
-      background: linear-gradient(135deg, #9333ea, #7e22ce);
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.2s, filter 0.2s;
-    }
-
-    button:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.15);
-    }
-
-    .hint {
-      color: #776783;
-      font-size: 11px;
-      margin-top: 12px;
-      line-height: 1.7;
-    }
-
-    .error {
-      display: none;
-      color: #fda4af;
-      font-size: 12px;
-      margin-top: 12px;
-    }
-
-    .player-section {
-      display: none;
-      margin-top: 26px;
-    }
-
-    .player-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .player-title {
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .player-tag {
-      color: #c4b5fd;
-      background: #a855f719;
-      border: 1px solid var(--border);
-      padding: 6px 10px;
-      border-radius: 20px;
-      font-size: 10px;
-    }
-
-    .video-frame {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      overflow: hidden;
-      border-radius: 12px;
-      background: #050308;
-      border: 1px solid var(--border);
-    }
-
-    iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 35px 10px 10px;
-      color: #786889;
-    }
-
-    .empty-star {
-      display: block;
-      font-size: 36px;
-      color: #70418f;
-      margin-bottom: 12px;
-    }
-
-    .empty-state p {
-      font-size: 12px;
-      line-height: 1.8;
-    }
-
-    footer {
-      text-align: center;
-      color: #665873;
-      font-size: 11px;
-      padding: 25px 20px 35px;
-      border-top: 1px solid var(--border);
-    }
-
-    footer span {
-      color: var(--purple-light);
-    }
-
-    @media (max-width: 560px) {
-      header {
-        padding: 0 20px;
-        height: 68px;
-      }
-
-      .logo {
-        font-size: 18px;
-      }
-
-      main {
-        padding-top: 55px;
-      }
-
-      .viewer {
-        padding: 17px;
-      }
-
-      .input-row {
-        flex-direction: column;
-      }
-
-      input, button {
-        height: 48px;
-        width: 100%;
-      }
-
-      h1 {
-        letter-spacing: -2px;
-      }
-    }
+    :root{--bg:#0b0712;--panel:#130d20;--purple:#a855f7;--purple-light:#c084fc;--text:#f5efff;--muted:#9285a5;--border:rgba(192,132,252,.16)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#29103f 0%,transparent 48%),var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif}
+    header{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 7%;border-bottom:1px solid var(--border);background:rgba(11,7,18,.8)}
+    .logo{display:flex;align-items:center;gap:10px;font-size:21px;font-weight:800;letter-spacing:-.8px}.star{color:var(--purple-light);font-size:32px;filter:drop-shadow(0 0 12px #a855f780)}
+    .status,.tag{color:#c4b5fd;font-size:11px;border:1px solid var(--border);border-radius:30px;padding:8px 12px;background:#a855f70c;white-space:nowrap}
+    main{max-width:900px;margin:auto;padding:58px 22px 56px}.hero{text-align:center;margin-bottom:34px}.eyebrow{display:inline-block;color:var(--purple-light);font-size:10px;font-weight:700;letter-spacing:3px;margin-bottom:18px}
+    h1{font-size:clamp(40px,8vw,66px);letter-spacing:-2.5px;font-weight:800;line-height:1.08}h1 span{background:linear-gradient(100deg,#c084fc,#9333ea,#e9d5ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .subtitle{color:var(--muted);font-size:14px;line-height:1.8;margin:16px auto 0;max-width:500px}
+    .viewer{background:linear-gradient(145deg,#181025,#100b19);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:0 25px 100px #0005}
+    .tabs{display:flex;gap:8px;margin-bottom:22px;border-bottom:1px solid var(--border);padding-bottom:14px}.tab{min-height:40px;padding:0 16px;border:1px solid var(--border);border-radius:10px;background:transparent;color:#c4b5fd;font:600 13px Inter,sans-serif;cursor:pointer}.tab[aria-selected="true"]{background:linear-gradient(135deg,#9333ea,#7e22ce);color:white;border-color:transparent}
+    .field-label{display:block;font-size:12px;color:#c4b5fd;font-weight:600;margin-bottom:10px}.input-row{display:flex;gap:10px}
+    input{flex:1;min-width:0;height:48px;background:#0b0712;color:white;border:1px solid #392449;border-radius:10px;padding:0 13px;font:13px Inter,sans-serif;outline:none}input:focus{border-color:var(--purple);box-shadow:0 0 0 3px #a855f719}input::placeholder{color:#665873}
+    button.action{min-height:46px;border:0;border-radius:10px;padding:0 18px;color:white;background:linear-gradient(135deg,#9333ea,#7e22ce);font:700 13px Inter,sans-serif;cursor:pointer}button.action:hover{filter:brightness(1.12)}button.secondary{background:#241632;border:1px solid var(--border)}button.danger{background:#3a1628;border:1px solid #6e2944}
+    .hint{color:#776783;font-size:11px;margin-top:11px;line-height:1.7}.message{display:none;font-size:12px;margin-top:12px;line-height:1.6}.message.error{color:#fda4af}.message.success{color:#d8b4fe}
+    .empty-state{text-align:center;padding:30px 10px 8px;color:#786889}.empty-star{display:block;font-size:34px;color:#70418f;margin-bottom:10px}.empty-state p{font-size:12px;line-height:1.8}
+    .player-section{display:none;margin-top:24px}.player-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.player-title{font-size:13px;font-weight:700}
+    .video-frame{position:relative;width:100%;aspect-ratio:16/9;min-height:180px;overflow:hidden;border-radius:12px;background:#050308;border:1px solid var(--border)}.video-frame iframe{display:block;position:absolute;inset:0;width:100%;height:100%;border:0}
+    .saved-list{display:grid;gap:10px}.saved-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;border:1px solid var(--border);border-radius:12px;background:#0e0917}.saved-info{min-width:0}.saved-name{font-size:13px;font-weight:700;overflow-wrap:anywhere}.saved-url{font-size:11px;color:var(--muted);margin-top:5px;overflow-wrap:anywhere}.saved-actions{display:flex;gap:7px;flex-shrink:0}.saved-actions button{min-height:36px;padding:0 11px;font-size:11px}
+    footer{text-align:center;color:#665873;font-size:11px;padding:24px 20px 32px;border-top:1px solid var(--border)}footer span{color:var(--purple-light)}
+    @media(max-width:560px){header{padding:12px 18px;min-height:64px}.logo{font-size:18px}.status{font-size:10px;padding:7px 9px}main{padding:42px 14px 42px}.viewer{padding:15px}.input-row{flex-direction:column}.input-row input,.input-row button{width:100%}h1{letter-spacing:-1.8px}.tabs{display:grid;grid-template-columns:1fr 1fr}.tab{width:100%;padding:0 8px}.saved-item{align-items:flex-start;flex-direction:column}.saved-actions{width:100%}.saved-actions button{flex:1}.player-top{align-items:flex-start}.video-frame{min-height:0;aspect-ratio:16/9}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
   </style>
 </head>
-
 <body>
   <header>
-    <div class="logo">
-      <span class="star" aria-hidden="true">✦</span>
-      <span>nova hub</span>
-    </div>
+    <div class="logo"><span class="star" aria-hidden="true">✦</span><span>nova hub</span></div>
     <div class="status">✦ Video Viewer</div>
   </header>
-
   <main>
     <section class="hero">
       <div class="eyebrow">YOUR PERSONAL VIDEO SPACE</div>
       <h1>Welcome to<br><span>Nova Hub.</span></h1>
-      <p class="subtitle">
-        Colle ton lien, lance ton lecteur et profite d'une interface
-        minimaliste dans un univers violet.
-      </p>
+      <p class="subtitle">Colle un lien YouTube, lance le lecteur et sauvegarde tes liens favoris dans ton navigateur.</p>
     </section>
-
     <section class="viewer">
-      <label class="field-label" for="videoUrl">URL DE LA VIDÉO</label>
-
-      <form id="videoForm">
-        <div class="input-row">
-          <input
-            id="videoUrl"
-            type="url"
-            placeholder="https://fr.pornhub.com/view_video.php?viewkey=..."
-            autocomplete="url"
-            required
-          >
-          <button type="submit">Charger ↗</button>
-        </div>
-      </form>
-
-      <p class="hint">
-        Colle un lien vidéo Pornhub contenant un identifiant viewkey.
-        Le lecteur intégré s'affichera ci-dessous si le site autorise
-        la lecture intégrée.
-      </p>
-
-      <p class="error" id="error" role="alert"></p>
-
-      <div class="empty-state" id="emptyState">
-        <span class="empty-star">✧</span>
-        <p>Ton prochain visionnage commence ici.<br>En attente d'un lien...</p>
+      <div class="tabs" role="tablist" aria-label="Sections Nova Hub">
+        <button class="tab" id="readerTab" role="tab" aria-selected="true" aria-controls="readerPanel">Lecteur</button>
+        <button class="tab" id="savedTab" role="tab" aria-selected="false" aria-controls="savedPanel">Mes liens</button>
       </div>
-
-      <div class="player-section" id="playerSection">
-        <div class="player-top">
-          <span class="player-title">Lecteur vidéo</span>
-          <span class="player-tag">NOVA PLAYER</span>
+      <section id="readerPanel" role="tabpanel" aria-labelledby="readerTab">
+        <label class="field-label" for="videoUrl">LIEN YOUTUBE</label>
+        <form id="videoForm">
+          <div class="input-row"><input id="videoUrl" type="url" placeholder="https://www.youtube.com/watch?v=..." autocomplete="url" required><button class="action" type="submit">Charger ↗</button></div>
+        </form>
+        <p class="hint">Colle un lien YouTube public. Certaines vidéos ne peuvent pas être intégrées si leur propriétaire a désactivé cette option.</p>
+        <p class="message error" id="error" role="alert"></p><p class="message success" id="success" role="status"></p>
+        <div class="empty-state" id="emptyState"><span class="empty-star">✧</span><p>Ton prochain visionnage commence ici.<br>En attente d'un lien...</p></div>
+        <div class="player-section" id="playerSection">
+          <div class="player-top"><span class="player-title">Lecteur vidéo</span><button class="action secondary" id="saveButton" type="button">＋ Sauvegarder</button></div>
+          <div class="video-frame"><iframe id="videoPlayer" title="Lecteur vidéo YouTube" src="about:blank" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
         </div>
-        <div class="video-frame">
-          <iframe
-            id="videoPlayer"
-            title="Lecteur vidéo intégré"
-            src="about:blank"
-            allowfullscreen
-            scrolling="no"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allow="autoplay; fullscreen; picture-in-picture"
-          ></iframe>
-        </div>
-      </div>
+      </section>
+      <section id="savedPanel" role="tabpanel" aria-labelledby="savedTab" hidden>
+        <label class="field-label" for="linkName">NOM DU LIEN (FACULTATIF)</label>
+        <div class="input-row" style="margin-bottom:18px"><input id="linkName" type="text" maxlength="80" placeholder="Ex. Musique, tutoriel…"><button class="action secondary" id="addCurrentButton" type="button">＋ Ajouter le lien actuel</button></div>
+        <div class="saved-list" id="savedList"></div>
+        <div class="empty-state" id="savedEmpty"><span class="empty-star">✧</span><p>Aucun lien sauvegardé pour le moment.<br>Charge une vidéo puis appuie sur « Sauvegarder ».</p></div>
+        <p class="hint">Les favoris restent enregistrés dans ce navigateur sur cet appareil. Ils ne sont pas synchronisés automatiquement.</p>
+      </section>
     </section>
   </main>
-
-  <footer>
-    Made with <span>✦</span> by Nova Hub
-  </footer>
-
+  <footer>Made with <span>✦</span> by Nova Hub</footer>
   <script>
     const form = document.getElementById('videoForm');
     const input = document.getElementById('videoUrl');
@@ -377,63 +77,99 @@
     const playerSection = document.getElementById('playerSection');
     const emptyState = document.getElementById('emptyState');
     const error = document.getElementById('error');
+    const success = document.getElementById('success');
+    const readerTab = document.getElementById('readerTab');
+    const savedTab = document.getElementById('savedTab');
+    const readerPanel = document.getElementById('readerPanel');
+    const savedPanel = document.getElementById('savedPanel');
+    const savedList = document.getElementById('savedList');
+    const savedEmpty = document.getElementById('savedEmpty');
+    const linkName = document.getElementById('linkName');
+    let currentVideo = null;
+    const STORAGE_KEY = 'novaHubSavedYouTubeLinks';
 
-    form.addEventListener('submit', function (event) {
-      event.preventDefault();
+    function showMessage(element, message) {
+      element.textContent = message;
+      element.style.display = message ? 'block' : 'none';
+    }
+    function switchTab(which) {
+      const isReader = which === 'reader';
+      readerTab.setAttribute('aria-selected', String(isReader));
+      savedTab.setAttribute('aria-selected', String(!isReader));
+      readerPanel.hidden = !isReader;
+      savedPanel.hidden = isReader;
+      if (!isReader) renderSaved();
+    }
+    readerTab.addEventListener('click', () => switchTab('reader'));
+    savedTab.addEventListener('click', () => switchTab('saved'));
 
-      error.style.display = 'none';
-
+    function getVideoId(raw) {
       let url;
-
-      try {
-        url = new URL(input.value.trim());
-      } catch {
-        showError('Entre une URL valide.');
-        return;
+      try { url = new URL(raw.trim()); } catch { return null; }
+      if (url.protocol !== 'https:' && url.protocol !== 'http:') return null;
+      const host = url.hostname.toLowerCase().replace(/^www\./, '');
+      let id = null;
+      if (host === 'youtube.com' || host === 'm.youtube.com' || host === 'music.youtube.com') {
+        if (url.pathname === '/watch') id = url.searchParams.get('v');
+        else if (url.pathname.startsWith('/embed/')) id = url.pathname.split('/')[2];
+        else if (url.pathname.startsWith('/shorts/')) id = url.pathname.split('/')[2];
+      } else if (host === 'youtu.be') {
+        id = url.pathname.split('/').filter(Boolean)[0];
       }
-
-      const allowedHosts = [
-        'pornhub.com',
-        'www.pornhub.com',
-        'fr.pornhub.com'
-      ];
-
-      if (
-        url.protocol !== 'https:' ||
-        !allowedHosts.includes(url.hostname)
-      ) {
-        showError('Entre un lien HTTPS valide provenant de Pornhub.');
-        return;
-      }
-
-      let viewkey = null;
-
-      if (url.pathname.includes('/view_video.php')) {
-        viewkey = url.searchParams.get('viewkey');
-      } else if (url.pathname.startsWith('/embed/')) {
-        viewkey = url.pathname.split('/embed/')[1].split('/')[0];
-      }
-
-      if (!viewkey || !/^[a-zA-Z0-9]+$/.test(viewkey)) {
-        showError('Impossible de trouver un identifiant vidéo dans ce lien.');
-        return;
-      }
-
-      player.src = 'https://www.pornhub.com/embed/' +
-        encodeURIComponent(viewkey);
-
+      return id && /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : null;
+    }
+    function loadVideo(raw, shouldScroll = true) {
+      const id = getVideoId(raw);
+      showMessage(error, ''); showMessage(success, '');
+      if (!id) { showMessage(error, 'Lien non reconnu. Colle une URL YouTube valide.'); return false; }
+      currentVideo = { id, url: 'https://www.youtube.com/watch?v=' + id };
+      input.value = currentVideo.url;
+      player.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id);
       playerSection.style.display = 'block';
       emptyState.style.display = 'none';
-      playerSection.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest'
-      });
-    });
-
-    function showError(message) {
-      error.textContent = message;
-      error.style.display = 'block';
+      if (shouldScroll) playerSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      return true;
     }
+    form.addEventListener('submit', event => { event.preventDefault(); loadVideo(input.value); });
+
+    function readSaved() {
+      try {
+        const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        return Array.isArray(value) ? value.filter(x => x && /^[a-zA-Z0-9_-]{11}$/.test(x.id) && typeof x.url === 'string') : [];
+      } catch { return []; }
+    }
+    function writeSaved(items) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); return true; }
+      catch { showMessage(error, 'La sauvegarde locale est indisponible dans ce navigateur.'); return false; }
+    }
+    function saveCurrent() {
+      if (!currentVideo) { showMessage(error, 'Charge d’abord une vidéo YouTube.'); return; }
+      const items = readSaved();
+      if (items.some(item => item.id === currentVideo.id)) { showMessage(success, 'Ce lien est déjà dans tes favoris.'); switchTab('saved'); return; }
+      const title = linkName.value.trim() || 'Vidéo YouTube';
+      items.unshift({ ...currentVideo, title, savedAt: Date.now() });
+      if (writeSaved(items)) { showMessage(success, 'Lien sauvegardé dans « Mes liens ».'); renderSaved(); }
+    }
+    document.getElementById('saveButton').addEventListener('click', saveCurrent);
+    document.getElementById('addCurrentButton').addEventListener('click', saveCurrent);
+
+    function renderSaved() {
+      const items = readSaved(); savedList.replaceChildren(); savedEmpty.style.display = items.length ? 'none' : 'block';
+      items.forEach(item => {
+        const card = document.createElement('article'); card.className = 'saved-item';
+        const info = document.createElement('div'); info.className = 'saved-info';
+        const name = document.createElement('div'); name.className = 'saved-name'; name.textContent = item.title || 'Vidéo YouTube';
+        const url = document.createElement('div'); url.className = 'saved-url'; url.textContent = item.url;
+        info.append(name, url);
+        const actions = document.createElement('div'); actions.className = 'saved-actions';
+        const open = document.createElement('button'); open.className = 'action'; open.type = 'button'; open.textContent = 'Charger';
+        open.addEventListener('click', () => { switchTab('reader'); loadVideo(item.url); });
+        const remove = document.createElement('button'); remove.className = 'action danger'; remove.type = 'button'; remove.textContent = 'Supprimer';
+        remove.addEventListener('click', () => { writeSaved(readSaved().filter(saved => saved.id !== item.id)); renderSaved(); });
+        actions.append(open, remove); card.append(info, actions); savedList.append(card);
+      });
+    }
+    renderSaved();
   </script>
 </body>
 </html>
